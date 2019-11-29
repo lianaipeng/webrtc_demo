@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Learning WebRTC - Chapter 5: Connecting ClientsTogether</title>
+    <style>
+      body {
+        background-color: #3D6DF2;
+        margin-top: 15px;
+        font-family: sans-serif;
+        color: white;
+      }
+      video {
+        background: black;
+        border: 1px solid gray;
+      }
+      .page {
+        position: relative;
+        display: block;
+        margin: 0 auto;
+        width: 800px;
+        height: 200px;
+      }
+      #localVideo {
+        width: 400px;
+        height: 500px;
+      }
+      #remoteVideo {
+        width: 400px;
+        height: 500px;
+      }
+      .contain{display: flex;}
+	  .baseContain{}
+    </style>
+  </head>
+  <body>
+    <div id="login-page" class="page">
+      <h2>Login As</h2>
+      <input type="text" id="localName"/>
+      <button id="login">Login</button>
+    </div>
+    <div id="call-page" class="page">
+      <div id="videos" class="contain">
+		<div class="baseContain">
+	  	  <h5>local</h5>
+      	  <video id="localVideo" autoplay=""></video>
+	  	</div>
+	  	<div class="baseContain">
+	  	  <h5>remote</h5>
+      	  <video id="remoteVideo" autoplay=""></video>
+	  	</div>
+      </div>
+	  <div class="baseContain">
+		<input type="text" id="remoteName" />
+		<button id="call">Call</button>
+		<button id="hang-up">Hang Up</button>
+	  </div>
+    </div>
+    <script src="client.js"></script>
+  </body>
+</html>
