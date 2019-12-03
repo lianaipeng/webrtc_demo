@@ -170,8 +170,10 @@ function createPeerConnection() {
     try {
 		var configuration = { 
 			"iceServers": [{
-				"url": "stun:stun.1.google.com:19302"
-			}]  
+				"url": "stun:stun.1.google.com:19302",
+				"credential": "password",
+				"username": "username"
+			}]
 		}; 
         //pc = new RTCPeerConnection(configuration);
 
