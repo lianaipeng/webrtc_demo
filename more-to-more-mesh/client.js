@@ -48,21 +48,21 @@ function getRemoteVideo(user) {
         console.log("getRemoteVideo id:", remoteVideos[i].id, "state:", remoteVideos[i].state);
         if (remoteVideos[i].state === false) {
             remoteVideos[i].state = true;
-			remoteVideos[i].userName = user;
+            remoteVideos[i].userName = user;
             return remoteVideos[i];
         }
     }
 }
 function retRemoteVideo(user) {
-	var tvideo = remoteVideos.find(item => {
-		return item.userName == user;		
-	});
+    var tvideo = remoteVideos.find(item => {
+        return item.userName == user;        
+    });
 
-	if (tvideo) {
-		tvideo.state = false;
-		tvideo.userName = "";
-		tvideo.handle.srcObject = null;
-	}
+    if (tvideo) {
+        tvideo.state = false;
+        tvideo.userName = "";
+        tvideo.handle.srcObject = null;
+    }
 }
 
 var connection = new WebSocket('ws://10.10.10.87:8888', 'chat');
@@ -152,7 +152,7 @@ function() {
 
         deletePeerConnection(key);
 
-		retRemoteVideo(key);
+        retRemoteVideo(key);
     }
 });
 // callback
@@ -173,20 +173,20 @@ function handleLogin(data) {
         });
     }
 
-	navigator.mediaDevices.getUserMedia({
-	    audio: true,
-	    //video: { width: 1280, height: 720 }
-	    //video: { width: 260, height: 400 }
-	    video: { 
-	        width: 260, 
-	        height: 200, 
-	        frameRate: {ideal:60, min:10} 
-	    }
-	})
-	.then(openLocalStream)
-	.catch(function(e) {
-	    alert('getUserMedia() error: ' + e.name);
-	});
+    navigator.mediaDevices.getUserMedia({
+        audio: true,
+        //video: { width: 1280, height: 720 }
+        //video: { width: 260, height: 400 }
+        video: { 
+            width: 260, 
+            height: 200, 
+            frameRate: {ideal:60, min:10} 
+        }
+    })
+    .then(openLocalStream)
+    .catch(function(e) {
+        alert('getUserMedia() error: ' + e.name);
+    });
 
     console.log("handleLogin$$", roomList);
 };
@@ -312,7 +312,7 @@ function handleLeave(data) {
         pcMap[data.fromUser].onaddstream = null;
         delete pcMap[data.fromUser];
 
-		retRemoteVideo(data.fromUser);
+        retRemoteVideo(data.fromUser);
     }
     console.log('handleLeave$$', pcMap);
 }
