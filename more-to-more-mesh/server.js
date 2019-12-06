@@ -2,29 +2,29 @@ var WebSocketServer = require('ws').Server,
 wss = new WebSocketServer({
     port: 8888
 });
-var users = new Map;
-var roomMap = new Map();
 
+var roomList = [];
+var connMap = new Map();
 //////////////////////////// WebSocket ////////////////////////////
 wss.on('connection',
 function(connection) {
-    console.log("User connected");
- 
+    //console.log("User connected");
+
     connection.on('message', function(message) {
-		doMessage(message, connection)
-	});
+        doMessage(message, connection)
+    });
  
-	/*
+    /*
     function sendTo(conn, message) {
         conn.send(JSON.stringify(message));
     }
-	*/
+    */
  
     connection.on('close', function() {
-		doClose(connection)
+        //console.log("close ###############");
+        doClose(connection)
     });
- 
-    connection.send('{"hello":"hello123"}');
+    //connection.send('{"hello":"hello123"}');
 });
  
 wss.on('listening',
@@ -38,199 +38,230 @@ function sendTo(conn, message) {
 }
 
 function doMessage(message, conn) {
-	//console.log("doMessage:" + message);
-	var data;
-	try {
-		data = JSON.parse(message);
-		//console.log(message);
-	} catch(e) {
-		console.log("Error parsing JSON");
-		data = {};
-	}
+    //console.log("doMessage:" + message);
+    var data;
+    try {
+        data = JSON.parse(message);
+        //console.log(message);
+    } catch(e) {
+        console.log("Error parsing JSON");
+        data = {};
+    }
 
-	switch (data.messageType) {
-		case "login":
-			handleLogin(conn, data);
-			break;
-		case "offer":
-			handleOffer(conn, data);
-			break;
-		case "answer":
-			handleAnswer(conn, data);
-			break;
-		case "candidate":
-			handleCandidate(data);
-			break;
-		case "leave":
-			handleLeave(data);
-			break;
+    switch (data.messageType) {
+        case "login":
+            handleLogin(conn, data);
+            break;
+        case "join":
+            handleJoin(conn, data);
+            break;
+        case "offer":
+            handleOffer(conn, data);
+            break;
+        case "answer":
+            handleAnswer(conn, data);
+            break;
+        case "candidate":
+            handleCandidate(data);
+            break;
+        case "leave":
+            handleLeave(data);
+            break;
         default:
             sendTo(conn, {
                 messageType: "error",
                 message: "Unrecognized command:" + data.messageType
             });
             break;
-	}
+    }
 }
 
 function handleLogin(conn, data) {
-	//var roomList = [{roomId:"",roomName:"", userList:[1,2,3,4]},...]
-	console.log("handleLogin:", data.roomId);
-	console.log("handleLogin: #", roomMap);
-	
-	if (roomMap[data.roomId]) {
-		//console.log("############# handleLogin:", data.userName);
-		//if (tuserName === data.userName) {
-		if (roomMap[data.roomId].userList.includes(data.userName)) {
-		// if(roomMap[data.roomId].userList.has(data.userName)) {
-			console.log("############# handleLogin: exist", data.userName);
-		} else {
-			roomMap[data.roomId].userList.push(data.userName);
-			//roomMap[data.roomId].userList.add(data.userName);
-		}
-	} else {
-		/*
-		var tuserList = new Set([]);
-		tuserList.add(data.userName);
-		*/
-		var tuserList = [];
-		tuserList.push(data.userName);
+    console.log("handleLogin^^:", data);
 
-		var troom = {};
-		troom.roomId = data.roomId;
-		troom.userList = tuserList;
-		roomMap[data.roomId] = troom;
-	}
-	console.log("handleLogin: #", roomMap, " userList:", roomMap[data.roomId].userList);
+    connMap[data.userName] = conn;
+    conn.userName = data.userName;
+	// 还拿不到roomId
+	// conn.roomId = data.roomId;
+    sendTo(conn, {
+        messageType: "login",
+        state: true,
+        roomList: roomList
+    });
 
-	users[data.userName] = conn;
+    console.log("handleLogin$$", roomList);
+}
+function handleJoin(conn, data) {
+    console.log("handleJoin^^ roomId:", data.roomId, "userName:", data.userName);
 
-	sendTo(conn, {
-		messageType: "login",
-		userList: roomMap[data.roomId].userList
-	});
+    var texist = 'noexist';
+    var tuserList = [];
+    //var troomInfo = roomList.filter(item => {return item.roomId === data.roomId});
+	conn.roomId = data.roomId;
+    var troomInfo = roomList.find(item => {
+            return item.roomId === data.roomId;
+            });
+    // 如果房间存在追加用户 如果不存在创建
+    if (troomInfo) {
+        console.log("handleJoin room exist roomId:", data.roomId, "add userName:", data.userName);
+        if (troomInfo.userList.includes(data.userName)) {
+            
+        } else {
+            troomInfo.userList.push(data.userName);
+        }
+        tuserList = troomInfo.userList;
+        //console.log("handleJoin", troomInfo, troomInfo.roomId, troomInfo.userList);
+        texist = 'exist';
+    } else {
+        console.log("handleJoin room create roomId:", data.roomId, "add userName:", data.userName);
+        tuserList.push(data.userName);
 
-	/*
-	//查询房间
-	var troom = roomArray.filter(item => {return item.roomId === data.roomId});
-	console.log("handleLogin: #", troom);
-	if(troom.length > 0){
-		troom.userList.push(data.userName);
-	} else {
-		var tuserList = [];
-		tuserList.push(data.userName);
+        var troom = {};
+        troom.roomId = data.roomId;
+        troom.userList = tuserList;
+        roomList.push(troom);
+        texist = 'created';
+    }
 
-		var troom = {};
-		troom.roomId = data.roomId;
-		troom.userList = tuserList;
-		roomArray.push(troom);
-	}
-	console.log("handleLogin: #", roomArray);
-	*/
-
-
-	/*
-	if (users[data.name]) {
-		sendTo(conn, {
-			type: "login",
-			login: false
-		});
-		console.log("Login as User:", data.name, "false");
-	} else {
-		users[data.name] = conn;
-		conn.name = data.name;
-		sendTo(conn, {
-			type: "login",
-			login: true
-		});
-		console.log("Login as User:", data.name, "OK");
-	}
-	*/
-
+    sendTo(conn, {
+        messageType: "join",
+        roomId: data.roomId,
+        state: texist,
+        userList: tuserList
+    });
+    console.log("handleJoin$$ roomId:", data.roomId, "userList:", tuserList);
 }
 
 function handleOffer(conn, data) {
-    console.log("Sending offer from:" , data.from , "to:", data.to);
-	var tconn = users[data.to];
-	//console.log("handleOffer", users);
-	if (tconn != null) {
-		conn.other = data.to;
-		sendTo(tconn, {
-			messageType: "offer",
-			offer: data.offer,
-			to: data.to,
-			from: data.from
-		});
-		console.log("Sending offer OK!!!!!! from:" , data.from , "to:", data.to);
-	}
+    console.log("handleOffer^^ roomId:", data.roomId, "fromUser:", data.fromUser, "to:", data.toUser);
+    var tconn = connMap[data.toUser];
+    if (tconn != null) {
+        sendTo(tconn, {
+            messageType: "offer",
+            roomId: data.roomId,
+            fromUser: data.fromUser,
+            toUser: data.toUser,
+            offer: data.offer
+        });
+    }
+    console.log("handleOffer$$");
 }
 
 function handleAnswer(conn, data) {
-    console.log("Sending answer from:", data.from, "to", data.to);
-    var tconn = users[data.to];
+    console.log("handleAnswer^^ roomId:", data.roomId, "fromUser:", data.fromUser, "to:", data.toUser);
+    var tconn = connMap[data.toUser];
     if (tconn != null) {
-        conn.other = data.to;
+        conn.other = data.toUser;
         sendTo(tconn, {
             messageType: "answer",
-            answer: data.answer,
-			to: data.to,
-			from: data.from
+            roomId: data.roomId,
+            fromUser: data.fromUser,
+            toUser: data.toUser,
+            answer: data.answer
         });
     }
+    console.log("handleAnswer$$");
 }
 
 function handleCandidate(data) {
-    //console.log("Sending candidate to", data.to);
-    //console.log("Sending candidate to", data);
-    var tconn = users[data.to];
+    console.log("handleCandidate^^ roomId:", data.roomId, "fromUser:", data.fromUser, "to:", data.toUser);
+    var tconn = connMap[data.toUser];
     if (tconn != null) {
-		console.log("Sending candidatei OK!!!!!!!!!!! to", data.to)
+        console.log("Sending candidate OK! to", data.toUser)
         sendTo(tconn, {
             messageType: "candidate",
-			to: data.to,
-			from: data.from,
+            roomId: data.roomId,
+            toUser: data.toUser,
+            fromUser: data.fromUser,
             candidate: data.candidate
         });
     }
+    console.log("handleCandidate$$");
+}
+
+function leaveMessage(room, from, to) {
+	console.log('leaveMessage^^ roomId:', room, "fromUser:", from, "toUser:", to);
+    // 只关闭视频连接
+    //var tconn = connMap[data.toUser];
+    var tconn = connMap[to];
+    if (tconn != null) {
+        sendTo(tconn, {
+            messageType: "leave",
+			roomId: room,
+            toUser: to,
+            fromUser: from
+        });
+    }
+	console.log('leaveMessage$$');
+}
+
+function removeUser(room, from, to) {
+	console.log("removeUser^^ roomId:", room, "fromUser:", from, "toUser:", to);
+    // 如果房间存在 删除房间里的该用户
+    var troomInfo = roomList.find(item => {
+        return item.roomId === room;
+    });
+    if (troomInfo) {
+        console.log("clearUser ", troomInfo.userList);
+        var index = troomInfo.userList.indexOf(from);
+        if (index != -1) {
+            troomInfo.userList.splice(index, 1);
+        }
+        console.log("clearUser ", troomInfo.userList, index);
+    }
+	console.log("removeUser$$");
 }
 
 function handleLeave(data) {
+    //console.log("handleLeave^^ roomId:", data.roomId, "fromUser:", data.fromUser, "to:", data.toUser);
+    console.log("handleLeave^^ roomId:", data.roomId);
 	/*
-    console.log("Disconnecting user from", data.name);
-    var conn = users[data.name];
-    conn.other = null;
-    if (conn != null) {
-        sendTo(conn, {
-            type: "leave"
+    // 只关闭视频连接
+    var tconn = connMap[data.toUser];
+    if (tconn != null) {
+        sendTo(tconn, {
+            messageType: "leave",
+			roomId: data.roomId,
+            toUser: data.toUser,
+            fromUser: data.fromUser
         });
     }
 	*/
-    console.log("Disconnecting user from", data.from);
-    var tconn = users[data.to];
-    if (tconn != null) {
-		if (tconn.other != null) {
-			tconn.other = null;
-		}
-        sendTo(tconn, {
-            messageType: "leave",
-			to: data.to,
-			from: data.from
-        });
+	leaveMessage(data.roomId, data.fromUser, data.toUser);
+	
+	removeUser(data.roomId, data.fromUser, data.toUser);
+	
+    for (var key in connMap) {
+        console.log("handleLeave$$ exist connnection:", key);
     }
 }
 
 function doClose(conn) {
-    if (conn.name) {
-        delete users[conn.name];
-        if (conn.otherName) {
-            console.log("Disconnecting user from", conn.otherName);
-            var tconn = users[conn.otherName];
-            tconn.otherName = null;
-            if (tconn != null) {
-                sendTo(tconn, {
-                    messageType: "leave"
-                });
-            }
+    console.log("doClose^^ roomId:", conn.roomId, "userName:", conn.userName);
+    if (conn.userName) {
+        var troomInfo = roomList.find(item => {
+            return item.roomId === conn.roomId;
+        });
+		if (troomInfo) {
+			console.log("doClose## userName:", troomInfo.userList);
+			troomInfo.userList.forEach(function(value, index, all) {
+				if (value === conn.userName) {
+					console.log("doClose remove == userName:", value);
+					troomInfo.userList.splice(index, 1);
+				} else {
+					leaveMessage(conn.roomId, conn.userName, value);
+					console.log("doClose message != userName:", value);
+				}
+			});
+			console.log("doClose## userName:", troomInfo.userList);
+		}
+
+        if (connMap[conn.userName]) {
+            delete connMap[conn.userName];
         }
+		for (var key in connMap) {
+    	    console.log("doClose## exist connnection:", key);
+    	}
     }
+    console.log("doClose$$");
 }
