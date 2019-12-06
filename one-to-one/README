@@ -24,5 +24,7 @@ http{
 server:
 nmp install ...
 
+node server.js
+
 client:
 http:10.10.10.10:8008
