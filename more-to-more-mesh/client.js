@@ -23,25 +23,26 @@ var roomId = "myRoom";
 var roomList = [];
 var pcMap = new Map();
 
+var connection = new WebSocket('ws://10.10.10.87:8888', 'chat');
 
-//////////////////////////////// GET ROOMID /////////////////////////////
+//////////////////////////////// GET ROOMID ////////////////////////////////
 function selectAddOption(value, index) {
     selectRoom.options.add(new Option(value, index));
 }
 
 function selectRoomChanged() {
     var selectText = selectRoom.options[selectRoom.selectedIndex].text;
+    inputRoom = document.getElementById('inputRoom');
     inputRoom.value = selectText;
 }
-//////////////////////////////// GET ROOMID /////////////////////////////
+//////////////////////////////// GET ROOMID ////////////////////////////////
 
-
+//////////////////////////////// GET VIDEO //////////////////////////////////
 var remoteVideos = [{"id":1, "handle":remoteVideo1, "state":false, "userName":""}, 
                     {"id":2, "handle":remoteVideo2, "state":false, "userName":""},
                     {"id":3, "handle":remoteVideo3, "state":false, "userName":""},
                     {"id":4, "handle":remoteVideo4, "state":false, "userName":""},
                     {"id":5, "handle":remoteVideo5, "state":false, "userName":""}];
-
 function getRemoteVideo(user) {
     //for (var obj in remoteVideos) {
     for (var i=0; i<remoteVideos.length; i++) {
@@ -64,8 +65,7 @@ function retRemoteVideo(user) {
         tvideo.handle.srcObject = null;
     }
 }
-
-var connection = new WebSocket('ws://10.10.10.87:8888', 'chat');
+//////////////////////////////// GET VIDEO //////////////////////////////////
 
 //////////////////////////////// WebSocket /////////////////////////////////
 connection.onopen = function() {
