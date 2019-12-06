@@ -28,14 +28,14 @@
         height: 100%;
       }
       .contain{
-            display: flex;
-            flex-direction:row;
-            flex-wrap:wrap
+        display: flex;
+        flex-direction:row;
+        flex-wrap:wrap
       }
       .baseContain{
-            width: 33%;
-            height: 280px;
-            margin: 10px 0px 10px 0px
+        width: 33%;
+        height: 280px;
+        margin: 10px 0px 10px 0px
       }
     </style>
   </head>
@@ -50,7 +50,7 @@
       <div>
         <!--<input type="text" id="remoteName" />-->
         <select style="width:118px;height:21px;" id="selectRoom" onchange="selectRoomChanged()">
-            <option style='display: none'></option>
+          <option style='display: none'></option>
         </select>
         <input name="box" style="width:100px;position:absolute;left:-2px;top:2px;" id='inputRoom'/>
         <button id="join">Join</button>
@@ -58,35 +58,34 @@
       </div>
 
       <div id="videos" class="contain">
+        <div class="baseContain">
+          <h5>local</h5>
+          <!--<video id="localVideo" autoplay="" style="object-fit:none"></video>-->
+          <video id="localVideo" autoplay="" ></video>
+        </div>
+        <div class="baseContain">
+          <h5>remote1</h5>
+          <video id="remoteVideo1" autoplay="" ></video>
+        </div>
+        <div class="baseContain">
+          <h5>remote2</h5>
+          <video id="remoteVideo2" autoplay="" ></video>
+        </div>
 
         <div class="baseContain">
-            <h5>local</h5>
-            <!--<video id="localVideo" autoplay="" style="object-fit:none"></video>-->
-            <video id="localVideo" autoplay="" ></video>
-          </div>
-          <div class="baseContain">
-            <h5>remote1</h5>
-            <video id="remoteVideo1" autoplay="" ></video>
-          </div>
-          <div class="baseContain">
-            <h5>remote2</h5>
-            <video id="remoteVideo2" autoplay="" ></video>
-          </div>
-
+          <h5>remote3</h5>
+          <video id="remoteVideo3" autoplay="" ></video>
+        </div>
         <div class="baseContain">
-            <h5>remote3</h5>
-            <video id="remoteVideo3" autoplay="" ></video>
-          </div>
-          <div class="baseContain">
-            <h5>remote4</h5>
-            <video id="remoteVideo4" autoplay="" ></video>
-          </div>
-          <div class="baseContain">
-            <h5>remote5</h5>
-            <video id="remoteVideo5" autoplay="" ></video>
-          </div>
-
+          <h5>remote4</h5>
+          <video id="remoteVideo4" autoplay="" ></video>
+        </div>
+        <div class="baseContain">
+          <h5>remote5</h5>
+          <video id="remoteVideo5" autoplay="" ></video>
+        </div>
       </div>
+
     </div>
     <script src="client.js"></script>
   </body>
