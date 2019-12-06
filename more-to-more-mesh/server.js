@@ -81,8 +81,8 @@ function handleLogin(conn, data) {
 
     connMap[data.userName] = conn;
     conn.userName = data.userName;
-	// 还拿不到roomId
-	// conn.roomId = data.roomId;
+    // 还拿不到roomId
+    // conn.roomId = data.roomId;
     sendTo(conn, {
         messageType: "login",
         state: true,
@@ -97,7 +97,7 @@ function handleJoin(conn, data) {
     var texist = 'noexist';
     var tuserList = [];
     //var troomInfo = roomList.filter(item => {return item.roomId === data.roomId});
-	conn.roomId = data.roomId;
+    conn.roomId = data.roomId;
     var troomInfo = roomList.find(item => {
             return item.roomId === data.roomId;
             });
@@ -180,23 +180,23 @@ function handleCandidate(data) {
 }
 
 function leaveMessage(room, from, to) {
-	console.log('leaveMessage^^ roomId:', room, "fromUser:", from, "toUser:", to);
+    console.log('leaveMessage^^ roomId:', room, "fromUser:", from, "toUser:", to);
     // 只关闭视频连接
     //var tconn = connMap[data.toUser];
     var tconn = connMap[to];
     if (tconn != null) {
         sendTo(tconn, {
             messageType: "leave",
-			roomId: room,
+            roomId: room,
             toUser: to,
             fromUser: from
         });
     }
-	console.log('leaveMessage$$');
+    console.log('leaveMessage$$');
 }
 
 function removeUser(room, from, to) {
-	console.log("removeUser^^ roomId:", room, "fromUser:", from, "toUser:", to);
+    console.log("removeUser^^ roomId:", room, "fromUser:", from, "toUser:", to);
     // 如果房间存在 删除房间里的该用户
     var troomInfo = roomList.find(item => {
         return item.roomId === room;
@@ -209,28 +209,28 @@ function removeUser(room, from, to) {
         }
         console.log("clearUser ", troomInfo.userList, index);
     }
-	console.log("removeUser$$");
+    console.log("removeUser$$");
 }
 
 function handleLeave(data) {
     //console.log("handleLeave^^ roomId:", data.roomId, "fromUser:", data.fromUser, "to:", data.toUser);
     console.log("handleLeave^^ roomId:", data.roomId);
-	/*
+    /*
     // 只关闭视频连接
     var tconn = connMap[data.toUser];
     if (tconn != null) {
         sendTo(tconn, {
             messageType: "leave",
-			roomId: data.roomId,
+            roomId: data.roomId,
             toUser: data.toUser,
             fromUser: data.fromUser
         });
     }
-	*/
-	leaveMessage(data.roomId, data.fromUser, data.toUser);
-	
-	removeUser(data.roomId, data.fromUser, data.toUser);
-	
+    */
+    leaveMessage(data.roomId, data.fromUser, data.toUser);
+    
+    removeUser(data.roomId, data.fromUser, data.toUser);
+    
     for (var key in connMap) {
         console.log("handleLeave$$ exist connnection:", key);
     }
@@ -242,26 +242,26 @@ function doClose(conn) {
         var troomInfo = roomList.find(item => {
             return item.roomId === conn.roomId;
         });
-		if (troomInfo) {
-			console.log("doClose## userName:", troomInfo.userList);
-			troomInfo.userList.forEach(function(value, index, all) {
-				if (value === conn.userName) {
-					console.log("doClose remove == userName:", value);
-					troomInfo.userList.splice(index, 1);
-				} else {
-					leaveMessage(conn.roomId, conn.userName, value);
-					console.log("doClose message != userName:", value);
-				}
-			});
-			console.log("doClose## userName:", troomInfo.userList);
-		}
+        if (troomInfo) {
+            console.log("doClose## userName:", troomInfo.userList);
+            troomInfo.userList.forEach(function(value, index, all) {
+                if (value === conn.userName) {
+                    console.log("doClose remove == userName:", value);
+                    troomInfo.userList.splice(index, 1);
+                } else {
+                    leaveMessage(conn.roomId, conn.userName, value);
+                    console.log("doClose message != userName:", value);
+                }
+            });
+            console.log("doClose## userName:", troomInfo.userList);
+        }
 
         if (connMap[conn.userName]) {
             delete connMap[conn.userName];
         }
-		for (var key in connMap) {
-    	    console.log("doClose## exist connnection:", key);
-    	}
+        for (var key in connMap) {
+            console.log("doClose## exist connnection:", key);
+        }
     }
     console.log("doClose$$");
 }
