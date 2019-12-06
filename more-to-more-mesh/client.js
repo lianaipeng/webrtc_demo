@@ -32,7 +32,6 @@ function selectAddOption(value, index) {
 
 function selectRoomChanged() {
     var selectText = selectRoom.options[selectRoom.selectedIndex].text;
-    inputRoom = document.getElementById('inputRoom');
     inputRoom.value = selectText;
 }
 //////////////////////////////// GET ROOMID ////////////////////////////////
