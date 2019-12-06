@@ -1,0 +1,29 @@
+how to start:
+
+nginx.conf:
+http{
+    ...	
+    server {
+        listen       8008;
+        server_name  localhost;
+
+        #charset koi8-r;
+
+        #access_log  logs/host.access.log  main;
+
+        location / { 
+            root /home/aplian/webrtc_demo/one-to-one;
+# root   html;
+            index  index.html index.htm;
+        }
+		...
+	}
+	...
+}
+
+server:
+nmp install ...
+
+client:
+http:10.10.10.10:8008
+
