@@ -146,8 +146,7 @@ function handleLeave(data) {
         }
         sendTo(tconn, {
             messageType: "leave",
-            toUser: data.toUser,
-            fromUser: data.fromUser
+            userName: data.fromUser
         });
     }
 }

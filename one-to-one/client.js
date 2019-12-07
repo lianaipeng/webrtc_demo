@@ -84,8 +84,7 @@ leaveButton.addEventListener("click",
 function() {
     send({
         messageType: "leave",
-        toUser: remoteUser,
-        fromUser: localUser
+        userName: localUser
     });
     hangup();
 });
