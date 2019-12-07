@@ -45,7 +45,7 @@ function doMessage(message, conn) {
         data = {};
     }
 
-    switch (data.type) {
+    switch (data.messageType) {
         case "login":
             handleLogin(conn, data);
             break;
@@ -63,65 +63,65 @@ function doMessage(message, conn) {
             break;
         default:
             sendTo(conn, {
-                type: "error",
-                message: "Unrecognized command:" + data.type
+                messageType: "error",
+                message: "Unrecognized command:" + data.messageType
             });
             break;
     }
 }
 
 function handleLogin(conn, data) {
-    if (users[data.name]) {
+    if (users[data.userName]) {
         sendTo(conn, {
-            type: "login",
+            messageType: "login",
             login: false
         });
-        console.log("Login as User:", data.name, "false");
+        console.log("Login as User:", data.userName, "false");
     } else {
-        users[data.name] = conn;
-        conn.name = data.name;
+        users[data.userName] = conn;
+        conn.userName = data.userName;
         sendTo(conn, {
-            type: "login",
+            messageType: "login",
             login: true
         });
-        console.log("Login as User:", data.name, "OK");
+        console.log("Login as User:", data.userName, "OK");
     }
 }
 
 function handleOffer(conn, data) {
-    console.log("Sending offer from:" , data.from , "to:", data.to);
-    var tconn = users[data.to];
+    console.log("Sending offer from:" , data.fromUser, "to:", data.toUser);
+    var tconn = users[data.toUser];
     if (tconn != null) {
-        conn.other = data.to;
+        conn.other = data.toUser;
         sendTo(tconn, {
-            type: "offer",
-            offer: data.offer,
-            to: data.to,
-            from: data.from
+            messageType: "offer",
+            toUser: data.toUser,
+            fromUser: data.fromUser,
+            offer: data.offer
         });
     }
 }
 
 function handleAnswer(conn, data) {
-    console.log("Sending answer from:", data.from, "to", data.to);
-    var tconn = users[data.to];
+    console.log("Sending answer from:", data.fromUser, "to", data.toUser);
+    var tconn = users[data.toUser];
     if (tconn != null) {
-        conn.other = data.to;
+        conn.other = data.toUser;
         sendTo(tconn, {
-            type: "answer",
-            answer: data.answer,
-            to: data.to,
-            from: data.from
+            messageType: "answer",
+            toUser: data.toUser,
+            fromUser: data.fromUser,
+            answer: data.answer
         });
     }
 }
 
 function handleCandidate(data) {
-    console.log("Sending candidate to", data.to);
-    var tconn = users[data.to];
+    console.log("Sending candidate to", data.toUser);
+    var tconn = users[data.toUser];
     if (tconn != null) {
         sendTo(tconn, {
-            type: "candidate",
+            messageType: "candidate",
             candidate: data.candidate
         });
     }
@@ -134,34 +134,34 @@ function handleLeave(data) {
     conn.other = null;
     if (conn != null) {
         sendTo(conn, {
-            type: "leave"
+            messageType: "leave"
         });
     }
     */
-    console.log("Disconnecting user from", data.from);
-    var tconn = users[data.to];
+    console.log("Disconnecting user from", data.fromUser);
+    var tconn = users[data.toUser];
     if (tconn != null) {
         if (tconn.other != null) {
             tconn.other = null;
         }
         sendTo(tconn, {
-            type: "leave",
-            to: data.to,
-            from: data.from
+            messageType: "leave",
+            toUser: data.toUser,
+            fromUser: data.fromUser
         });
     }
 }
 
 function doClose(conn) {
-    if (conn.name) {
-        delete users[conn.name];
+    if (conn.userName) {
+        delete users[conn.userName];
         if (conn.otherName) {
             console.log("Disconnecting user from", conn.otherName);
             var tconn = users[conn.otherName];
             tconn.otherName = null;
             if (tconn != null) {
                 sendTo(tconn, {
-                    type: "leave"
+                    messageType: "leave"
                 });
             }
         }

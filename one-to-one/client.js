@@ -28,7 +28,7 @@ connection.onmessage = function(message) {
     //alert(JSON.stringify(message.data));
     //console.log("Got message:", message.data);
     var data = JSON.parse(message.data);
-    switch (data.type) {
+    switch (data.messageType) {
     case "login":
         handleLogin(data);
         break;
@@ -45,7 +45,7 @@ connection.onmessage = function(message) {
         handleLeave(data);
         break;
     default:
-        console.log("Unrecognized command", data.type);
+        console.log("Unrecognized command", data.messageType);
         break;
     }
 };
@@ -66,8 +66,8 @@ function(event) {
     localUser = localNameInput.value;
     if (localUser.length > 0) {
         send({
-            type: "login",
-            name: localUser
+            messageType: "login",
+            userName: localUser
         });
     }
 });
@@ -83,9 +83,9 @@ function() {
 leaveButton.addEventListener("click",
 function() {
     send({
-        type: "leave",
-        to: remoteUser,
-        from: localUser
+        messageType: "leave",
+        toUser: remoteUser,
+        fromUser: localUser
     });
     hangup();
 });
@@ -102,7 +102,7 @@ function handleLogin(data) {
 };
 // 接收offer callback
 function handleOffer(data) {
-    remoteUser = data.from;
+    remoteUser = data.fromUser;
     if (pc == null) {
         createPeerConnection()
     }
@@ -131,7 +131,7 @@ function handleLeave(data) {
 
     setupPeerConnection(stream);
     */
-    console.log('Remote hangup received:', data.from, "leave");
+    console.log('Remote hangup received:', data.fromUser, "leave");
     //hangup();
     remoteVideo.srcObject = null;
 }
@@ -196,10 +196,10 @@ function handleIceCandidate(event) {
      console.log('Handle ICE candidate event: ', event);
      if (event.candidate) {
         send({
-            type: "candidate",
-            candidate: event.candidate,
-            to: remoteUser,
-            frome: localUser
+            messageType: "candidate",
+            toUser: remoteUser,
+            fromUser: localUser,
+            candidate: event.candidate
         });
         console.log('Broadcast Candidate:');
      } else {
@@ -227,10 +227,10 @@ function createOfferAndSendMessage(offer) {
     //console.log('createOfferAndSendMessage sending message', offer);
     console.log('createOfferAndSendMessage sending message');
     send({
-        type: "offer",
-        offer: offer,
-        to: remoteUser,
-        from: localUser
+        messageType: "offer",
+        toUser: remoteUser,
+        fromUser: localUser,
+        offer: offer
     });
     pc.setLocalDescription(offer);
 }
@@ -251,10 +251,10 @@ function createAnswerAndSendMessage(answer) {
     console.log('createAnswerAndSendMessage sending message');
     pc.setLocalDescription(answer);
     send({
-        type: "answer",
-        answer: answer,
-        to: remoteUser,
-        from: localUser
+        messageType: "answer",
+        toUser: remoteUser,
+        fromUser: localUser,
+        answer: answer
     });
 }
 function handleCreateAnswerError(error) {
