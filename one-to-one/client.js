@@ -8,7 +8,7 @@ loginButton = document.querySelector('#login');
 var callPage = document.querySelector('#call-page'),
 remoteNameInput = document.querySelector('#remoteName'),
 callButton = document.querySelector('#call'),
-hangUpButton = document.querySelector('#hang-up');
+leaveButton = document.querySelector('#leave');
 callPage.style.display = "none";
 
 var localVideo = document.querySelector('#localVideo');
@@ -80,7 +80,7 @@ function() {
     }
 });
 // 挂起按钮
-hangUpButton.addEventListener("click",
+leaveButton.addEventListener("click",
 function() {
     send({
         type: "leave",

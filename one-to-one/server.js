@@ -22,10 +22,8 @@ function(connection) {
     connection.on('close', function() {
         doClose(connection)
     });
- 
-    connection.send('{"hello":"hello123"}');
 });
- 
+
 wss.on('listening',
 function() {
     console.log("Server started...");
