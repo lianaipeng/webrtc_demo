@@ -35,7 +35,7 @@ function sendTo(conn, message) {
 }
 
 function doMessage(message, conn) {
-    //console.log("doMessage:" + message);
+    console.log("doMessage:" + message);
     var data;
     try {
         data = JSON.parse(message);
@@ -122,6 +122,8 @@ function handleCandidate(data) {
     if (tconn != null) {
         sendTo(tconn, {
             messageType: "candidate",
+            toUser: data.toUser,
+            fromUser: data.fromUser,
             candidate: data.candidate
         });
     }
