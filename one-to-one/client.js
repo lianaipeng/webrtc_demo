@@ -106,6 +106,7 @@ function handleOffer(data) {
         createPeerConnection()
     }
     pc.setRemoteDescription(data.offer);
+    //pc.setRemoteDescription(JSON.parse(data.offer));
     doAnswer();
 }
 // 接收answer callback
@@ -174,9 +175,14 @@ function createPeerConnection() {
                 "username": "username"
             }]
         }; 
+        var optionalArgument = {
+            optional: [{
+                DtlsSrtpKeyAgreement: true
+          }]
+        };
         //pc = new RTCPeerConnection(configuration);
 
-        pc = new RTCPeerConnection(null);
+        pc = new RTCPeerConnection(null, optionalArgument);
         pc.onicecandidate = handleIceCandidate;
         pc.onaddstream = handleRemoteStreamAdded;
         //pc.onaddstream = function(e) {
