@@ -53,16 +53,23 @@ http:10.10.10.10:8008
         ]
     }
 2.Join And Offer:
-    选择(或输入)房间, 并给房间里所有的用户创建PeerConnection连接,
-    获取本地offer. 通过服务器转发offer消息给房间里所有的在线用户.
+    选择(或输入)房间, 
     如果房间不存在, 则创建房间, 并不转发offer.
-    -->  创建房间
+    -->  加入房间(无则创建)
     {
-        "messageType":"create",
+        "messageType":"join",
         "roomId":"roomNew",
         "userName":"loginName"
     }
-    如果房间存在:
+    <-- 加入成功返回数据
+    {
+        "messageType":"join",
+        "roomId":"roomNew",
+        "state": "exist|created",
+        "userList": [ '2222', '1111' ]
+    }
+    给房间里除自己外, 所有的用户创建PeerConnection连接,
+    获取本地offer. 通过服务器转发offer消息给房间里所有的在线用户.
     ---->  发送offer信息给远端用户, 添加到setLocalDescription
     {
         "messageType":"offer",
