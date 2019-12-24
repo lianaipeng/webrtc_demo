@@ -96,6 +96,16 @@ function handleLogin(data) {
         loginPage.style.display = "none";
         callPage.style.display = "block";
         // Get the plumbing ready for a call
+
+        navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: true
+        })
+        .then(openLocalStream)
+        .catch(function(e) {
+            alert('getUserMedia() error: ' + e.name);
+        });
+
         createPeerConnection();
     }
 };
@@ -150,15 +160,6 @@ function hangup() {
 
 ////////////////////////////// PeerConnection //////////////////////////////
 /////////////// MediaDevice /////////////////////////
-navigator.mediaDevices.getUserMedia({
-    audio: true,
-    video: true
-})
-.then(openLocalStream)
-.catch(function(e) {
-    alert('getUserMedia() error: ' + e.name);
-});
-
 function openLocalStream(stream) {
     console.log('## Open local video stream');
     localVideo.srcObject = stream;
@@ -178,7 +179,7 @@ function createPeerConnection() {
         var optionalArgument = {
             optional: [{
                 DtlsSrtpKeyAgreement: true
-          }]
+          },{frameRate:30}]
         };
         //pc = new RTCPeerConnection(configuration);
 
