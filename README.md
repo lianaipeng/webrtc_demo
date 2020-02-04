@@ -5,6 +5,8 @@ chrome://flags/#unsafely-treat-insecure-origin-as-secure
 添加网页地址  
 开启摄像头和麦克风  
 
+local域 || 开启了 HTTPS 的域
+https://www.cnblogs.com/Wayou/p/using_MediaDevices_getUserMedia_wihtout_https.html
 
 ###############################################################  
 Mesh 网格, 每个人都跟其他人单独建立连接. 4个人的情况下, 每个人建立3个连接, 也就是3个上传流和3个下载流. 此方案对客户端网络和计算能力要求最高, 对服务端没有特别要求.
