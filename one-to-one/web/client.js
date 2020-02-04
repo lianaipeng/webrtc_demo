@@ -153,7 +153,12 @@ function hangup() {
 /////////////// MediaDevice /////////////////////////
 navigator.mediaDevices.getUserMedia({
     audio: true,
-    video: true
+    //video: true
+    video: { 
+        width: 150, 
+        height: 200, 
+        frameRate: {ideal:60, min:10} 
+    }
 })
 .then(openLocalStream)
 .catch(function(e) {
