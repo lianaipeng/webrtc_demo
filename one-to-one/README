@@ -23,7 +23,7 @@ http{
 
 server:
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-nmp install ...
+npm install ...
 
 node server.js
 

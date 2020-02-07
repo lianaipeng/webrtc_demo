@@ -1,4 +1,5 @@
-var connection = new WebSocket('ws://10.10.10.87:8888'),
+//var connection = new WebSocket('ws://10.10.10.87:8888'),
+var connection = new WebSocket('wss://xx.xxxxx.com:28887'),
 localName = "";
 
 var loginPage = document.querySelector('#login-page'),
