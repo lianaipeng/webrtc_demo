@@ -24,7 +24,7 @@ var roomList = [];
 var pcMap = new Map();
 
 //var connection = new WebSocket('ws://10.10.10.87:8888', 'chat');
-var connection = new WebSocket('ws://oa.wahu.im:28888', 'chat');
+var connection = new WebSocket('wss://xxx.xxxxx.com:28888');
 
 //////////////////////////////// GET ROOMID ////////////////////////////////
 function selectAddOption(value, index) {
