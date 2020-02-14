@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		72841687E2856B848CF27082 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 97102DA1E77FB3379C1818EB /* libPods-ios.a */; };
-		B2132D3E23A79227009824B2 /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2D19F9623A22EDF0043DF7A /* WebRTC.framework */; };
-		B2132D3F23A79227009824B2 /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B2D19F9623A22EDF0043DF7A /* WebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		72841687E2856B848CF27082 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 97102DA1E77FB3379C1818EB /* libPods-ios.a */; settings = {ATTRIBUTES = (Weak, ); }; };
+		B273A64D23F56CA800ED136E /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B273A64B23F56C4000ED136E /* WebRTC.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		B273A64E23F56CA800ED136E /* WebRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B273A64B23F56C4000ED136E /* WebRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B2CF34E123A0977D00297D4E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B2CF34E023A0977D00297D4E /* AppDelegate.m */; };
 		B2CF34E423A0977D00297D4E /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B2CF34E323A0977D00297D4E /* SceneDelegate.m */; };
 		B2CF34E723A0977D00297D4E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2CF34E623A0977D00297D4E /* ViewController.m */; };
@@ -42,13 +42,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		B2132D4023A79227009824B2 /* Embed Frameworks */ = {
+		B2B7B98023EEA6E300917EA8 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B2132D3F23A79227009824B2 /* WebRTC.framework in Embed Frameworks */,
+				B273A64E23F56CA800ED136E /* WebRTC.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -57,6 +57,7 @@
 
 /* Begin PBXFileReference section */
 		97102DA1E77FB3379C1818EB /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B273A64B23F56C4000ED136E /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = WebRTC.framework; sourceTree = "<group>"; };
 		B2CF34DC23A0977D00297D4E /* ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ios.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2CF34DF23A0977D00297D4E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B2CF34E023A0977D00297D4E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -77,7 +78,6 @@
 		B2CF350823A0978000297D4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2CF351423A09B2600297D4E /* VideoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoViewController.h; sourceTree = "<group>"; };
 		B2CF351523A09B2600297D4E /* VideoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoViewController.m; sourceTree = "<group>"; };
-		B2D19F9623A22EDF0043DF7A /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = WebRTC.framework; sourceTree = "<group>"; };
 		B2D19F9823A2355E0043DF7A /* WebSocketManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebSocketManager.h; sourceTree = "<group>"; };
 		B2D19F9923A2355E0043DF7A /* WebSocketManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebSocketManager.m; sourceTree = "<group>"; };
 		B2D19F9E23A4F8E70043DF7A /* WebRTCManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebRTCManager.h; sourceTree = "<group>"; };
@@ -92,7 +92,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				72841687E2856B848CF27082 /* libPods-ios.a in Frameworks */,
-				B2132D3E23A79227009824B2 /* WebRTC.framework in Frameworks */,
+				B273A64D23F56CA800ED136E /* WebRTC.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,7 +138,7 @@
 		B2CF34DE23A0977D00297D4E /* ios */ = {
 			isa = PBXGroup;
 			children = (
-				B2D19F9623A22EDF0043DF7A /* WebRTC.framework */,
+				B273A64B23F56C4000ED136E /* WebRTC.framework */,
 				B2D19F9823A2355E0043DF7A /* WebSocketManager.h */,
 				B2D19F9923A2355E0043DF7A /* WebSocketManager.m */,
 				B2D19F9E23A4F8E70043DF7A /* WebRTCManager.h */,
@@ -206,7 +206,7 @@
 				B2CF34D823A0977D00297D4E /* Sources */,
 				B2CF34D923A0977D00297D4E /* Frameworks */,
 				B2CF34DA23A0977D00297D4E /* Resources */,
-				B2132D4023A79227009824B2 /* Embed Frameworks */,
+				B2B7B98023EEA6E300917EA8 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -447,6 +447,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -505,6 +506,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -529,7 +531,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5BD4M5744V;
+				DEVELOPMENT_TEAM = 8U8J2367F7;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -542,7 +544,8 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_CFLAGS = "-fembed-bitcode";
-				PRODUCT_BUNDLE_IDENTIFIER = com.demowocao.wozaicao.wocao;
+				"OTHER_CODE_SIGN_FLAGS[sdk=*]" = "--deep";
+				PRODUCT_BUNDLE_IDENTIFIER = wocao.wocao.com.wocao;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -554,7 +557,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5BD4M5744V;
+				DEVELOPMENT_TEAM = 8U8J2367F7;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -567,7 +570,8 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_CFLAGS = "-fembed-bitcode";
-				PRODUCT_BUNDLE_IDENTIFIER = com.demowocao.wozaicao.wocao;
+				"OTHER_CODE_SIGN_FLAGS[sdk=*]" = "--deep";
+				PRODUCT_BUNDLE_IDENTIFIER = wocao.wocao.com.wocao;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -578,6 +582,10 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ios",
+				);
 				INFOPLIST_FILE = iosTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -597,6 +605,10 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ios",
+				);
 				INFOPLIST_FILE = iosTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -615,6 +627,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ios",
+				);
 				INFOPLIST_FILE = iosUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -632,6 +648,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ios",
+				);
 				INFOPLIST_FILE = iosUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
