@@ -319,6 +319,18 @@ function handleLeave(data) {
 ////////////////////////////// PeerConnection //////////////////////////////
 // 必须初始化完 本地视频 才能调用create函数
 /////////////// MediaDevice /////////////////////////
+//var constraints = { // 音频、视频约束
+//  audio: true, // 指定请求音频Track
+//  video: {  // 指定请求视频Track
+//      mandatory: { // 对视频Track的强制约束条件
+//          width: {min: 320},
+//          height: {min: 180}
+//      },
+//      optional: [ // 对视频Track的可选约束条件
+//          {frameRate: 30}
+//      ]
+//  }
+//};
 /*
 navigator.mediaDevices.getUserMedia({
     audio: true,
@@ -353,6 +365,10 @@ function deletePeerConnection(remote) {
 function createPeerConnection(room, rUser) {
     var pc = null;
     try {
+        //"iceServers": [
+        //    { "url": "stun:stun.l.google.com:19302" }, //使用google公共测试服务器
+        //    { "url": "turn:user@turnserver.com", "credential": "pass" } // 如有turn服务器，可在此配置
+        //]
         var configuration = { 
             "iceServers": [{
                 "url": "stun:stun.1.google.com:19302",
