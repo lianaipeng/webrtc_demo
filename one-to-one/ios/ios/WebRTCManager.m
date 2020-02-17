@@ -77,8 +77,8 @@
 //        NSLog(@"WebRTCManager doCall %@", _peerConnection.signalingState);
 //    }
     
-    NSDictionary *mandatory = @{kRTCMediaConstraintsOfferToReceiveAudio : kRTCMediaConstraintsValueTrue,
-                                kRTCMediaConstraintsOfferToReceiveVideo : kRTCMediaConstraintsValueTrue};
+    
+    NSDictionary *mandatory = @{kRTCMediaConstraintsOfferToReceiveAudio:kRTCMediaConstraintsValueFalse,  kRTCMediaConstraintsOfferToReceiveVideo:kRTCMediaConstraintsValueTrue};
     RTCMediaConstraints *constraints = [[RTCMediaConstraints alloc] initWithMandatoryConstraints:mandatory optionalConstraints:nil];
     
     //__weak __typeof(_peerConnection) tconnection = _peerConnection;
@@ -177,6 +177,7 @@
         // 添加音频轨
         RTCAudioTrack *audioTrack = [_factory audioTrackWithTrackId:@"ARDAMSa0"];
         [_localStream addAudioTrack:audioTrack];
+        //[audioTrack setIsEnabled:false];
         
         // 添加视频轨
         RTCVideoSource *videoSource = [_factory videoSource];
@@ -184,6 +185,7 @@
         // videoSource 绑定音轨
         RTCVideoTrack *videoTrack = [_factory videoTrackWithSource:videoSource trackId:@"ARDAMSv0"];
         [_localStream addVideoTrack:videoTrack];
+        [videoTrack setIsEnabled:false];
         
         // 摄像头权限 要和 videoSource绑定
         AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
@@ -238,9 +240,7 @@
     RTCConfiguration *configuration = [[RTCConfiguration alloc] init];
     [configuration setIceServers:iceServers];
     
-    NSDictionary *mandatory = @{kRTCMediaConstraintsOfferToReceiveAudio : kRTCMediaConstraintsValueTrue,
-                                kRTCMediaConstraintsOfferToReceiveVideo : kRTCMediaConstraintsValueTrue,
-                                };
+    NSDictionary *mandatory = @{kRTCMediaConstraintsOfferToReceiveAudio:kRTCMediaConstraintsValueFalse, kRTCMediaConstraintsOfferToReceiveVideo:kRTCMediaConstraintsValueTrue};
     RTCMediaConstraints *constraints = [[RTCMediaConstraints alloc] initWithMandatoryConstraints:mandatory optionalConstraints:nil];
     
     RTCPeerConnection *connection = [_factory peerConnectionWithConfiguration:configuration constraints:constraints delegate:self];
@@ -276,8 +276,7 @@
 
 -(void)doAnswer {
     NSLog(@"WebRTCManager doAnswer");
-    NSDictionary *mandatory = @{kRTCMediaConstraintsOfferToReceiveAudio : kRTCMediaConstraintsValueTrue,
-                                kRTCMediaConstraintsOfferToReceiveVideo : kRTCMediaConstraintsValueTrue};
+    NSDictionary *mandatory = @{kRTCMediaConstraintsOfferToReceiveAudio:kRTCMediaConstraintsValueFalse, kRTCMediaConstraintsOfferToReceiveVideo:kRTCMediaConstraintsValueTrue};
     RTCMediaConstraints *constraints = [[RTCMediaConstraints alloc] initWithMandatoryConstraints:mandatory optionalConstraints:nil];
     __weak __typeof(_peerConnection) tconnection = _peerConnection;
     [tconnection answerForConstraints:constraints completionHandler:^(RTCSessionDescription * _Nullable sdp, NSError * _Nullable error) {
@@ -357,6 +356,8 @@
     if ([_delegate respondsToSelector:@selector(webRTCManager:addRemoteStream:)]){
         NSLog(@"WebRTCManager didAddStream ##### ##### ##### ##### ##### ##### ##### ##### 1");
         [_delegate webRTCManager:self addRemoteStream:stream];
+        
+        //stream.audioTracks
         NSLog(@"WebRTCManager didAddStream ##### ##### ##### ##### ##### ##### ##### ##### 2");
     } else {
         NSLog(@"WebRTCManager didAddStream ##### ##### ##### ##### ##### ##### ##### ##### error");
