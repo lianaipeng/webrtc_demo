@@ -13,7 +13,11 @@ leaveButton = document.querySelector('#leave');
 callPage.style.display = "none";
 
 var localVideo = document.querySelector('#localVideo');
+var localConstrantsV = document.querySelector('#localConstrantsV');
+var localConstrantsA = document.querySelector('#localConstrantsA');
 var remoteVideo = document.querySelector('#remoteVideo');
+var remoteConstrantsV = document.querySelector('#remoteConstrantsV');
+var remoteConstrantsA = document.querySelector('#remoteConstrantsA');
 var localUser;
 var remoteUser;
 
@@ -152,36 +156,60 @@ function hangup() {
 
 ////////////////////////////// PeerConnection //////////////////////////////
 /////////////// MediaDevice /////////////////////////
-//var constraints = { // 音频、视频约束
-//  audio: true, // 指定请求音频Track
-//  video: {  // 指定请求视频Track
-//      mandatory: { // 对视频Track的强制约束条件
-//          width: {min: 320},
-//          height: {min: 180}
-//      },
-//      optional: [ // 对视频Track的可选约束条件
-//          {frameRate: 30}
-//      ]
-//  }
-//};
-navigator.mediaDevices.getUserMedia({
-    audio: true,
-    //video: true
-    video: { 
-        width: 150, 
-        height: 200, 
-        frameRate: {ideal:60, min:10} 
-    }
-})
-.then(openLocalStream)
-.catch(function(e) {
-    alert('getUserMedia() error: ' + e.name);
-});
+var contrants = {
+//    video:false,
+    video: {
+        width:320, 
+        height:240, 
+        //aspectRatio:1.33, // 宽高比，这个由宽除以高计算，一般不用设置
+        frameRate:20, 
+        //facingMode:"environment", // 摄像头面对模式，user是面向使用者(前置摄像头),environment是后置摄像头，left前置左摄像头，right前置右摄像头
+        //resizeMode:"none", // 裁剪模式，none为不裁剪(不常用)
+           },
+//    audio: false
+    audio: {
+        //volume:1.0, // 音量，0静音，1最大声音
+        volume:0, // 音量，0静音，1最大声音
+        sampleRate:44100,// 采样率
+        sampleSize:8, // 采样大小(每一个样用多少位表示)
+        echoCancellation: true, // 是否开启回音消除
+        autoGainControl:true, // 是否开启自动增益，也就是在原有录制的声音的基础上是否增加音量
+        noiseSuppression:true, // 是否开启降噪
+        latency: 0.2, // 延迟大小，在直播过程中latency设置的越小实时性会越好，但是网络不好时容易出现卡顿；设置的越大流畅度越好，但是设置太大会有明显的延迟。一般设置500ms，设置为200ms实时效果就很好了，大于500ms就能明显感觉到延迟了。
+        channelCount:1, // 声道数，一般设置单声道就够了
+           }
+};
+navigator.mediaDevices.getUserMedia(contrants).then(openLocalStream).catch(handleError);
+//navigator.mediaDevices.getUserMedia({
+//    audio: true,
+//    //video: true
+//    video: { 
+//        width: 150, 
+//        height: 200, 
+//        frameRate: {ideal:60, min:10} 
+//    }
+//})
+//.then(openLocalStream)
+//.catch(function(e) {
+//    alert('getUserMedia() error: ' + e.name);
+//});
 
 function openLocalStream(stream) {
     console.log('## Open local video stream');
     localVideo.srcObject = stream;
     localStream = stream;
+
+    var videoTrack = stream.getVideoTracks()[0]; // 获取视频轨的第一个轨
+    var videoConstrants = videoTrack.getSettings(); // 获取约束信息
+    localConstrantsV.textContent = JSON.stringify(videoConstrants, null, 2);
+
+    var audioTrack = stream.getAudioTracks()[0]; // 获取视频轨的第一个轨
+    var audioConstrants = audioTrack.getSettings(); // 获取约束信息
+    localConstrantsA.textContent = JSON.stringify(audioConstrants, null, 2);
+}
+
+function handleError(err){
+    console.log('getUserMedia() name:' + err.name + ' message:' + err.message);
 }
 /////////////// MediaDevice /////////////////////////
 /////////////// create peerconnection ///////////////
@@ -237,6 +265,16 @@ function handleIceCandidate(event) {
 function handleRemoteStreamAdded(event) {
     console.log('Handle remote stream added.');
     remoteVideo.srcObject = event.stream;
+
+    var videoTrack = event.stream.getVideoTracks()[0]; // 获取视频轨的第一个轨
+    var videoConstrants = videoTrack.getSettings(); // 获取约束信息
+    //remoteConstrants.textContent = JSON.stringify(videoConstrants, null, 2);
+    //
+    var audioTrack = event.stream.getAudioTracks()[0]; // 获取视频轨的第一个轨
+    var audioConstrants = audioTrack.getSettings(); // 获取约束信息
+    //localConstrantsA.textContent = JSON.stringify(audioConstrants, null, 2);
+    console.log('Handle remote stream added.videoConstrants:', JSON.stringify(videoConstrants, null, 2));
+    console.log('Handle remote stream added.audioConstrants:', JSON.stringify(audioConstrants, null, 2));
 }
 function handleRemoteStreamRemoved(event) {
     console.log('Handle remote stream removed. Event: ', event);

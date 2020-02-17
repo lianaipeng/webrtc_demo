@@ -31,6 +31,11 @@
       }
       .contain{display: flex;}
       .baseContain{}
+      .labelDiv{
+          white-space: pre-wrap;
+          word-wrap: break-word;
+          word-break: break-all;
+      }
     </style>
   </head>
   <body>
@@ -47,13 +52,21 @@
       </div>
       <div id="videos" class="contain">
         <div class="baseContain">
-          <h5>local</h5>
+          <label>local</label>
           <!--<video id="localVideo" autoplay="" style="object-fit:none"></video>-->
           <video id="localVideo" autoplay="" style="object-fit:none"></video>
+          <label>视频约束信息：</label>
+          <div class="labelDiv" id="localConstrantsV"></div>
+          <label>音频约束信息：</label>
+          <div class="labelDiv" id="localConstrantsA"></div>
         </div>
         <div class="baseContain">
-          <h5>remote</h5>
+          <label>remote</label>
           <video id="remoteVideo" autoplay="" style="object-fit:none"></video>
+          <label>视频约束信息：</label>
+          <div class="labelDiv" id="remoteConstrantsV"></div>
+          <label>音频约束信息：</label>
+          <div class="labelDiv" id="remoteConstrantsA"></div>
         </div>
       </div>
     </div>
