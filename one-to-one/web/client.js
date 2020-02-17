@@ -1,4 +1,5 @@
-var connection = new WebSocket('ws://10.10.10.87:8888'),
+//var connection = new WebSocket('ws://10.10.10.87:8888'),
+var connection = new WebSocket('wss://xx.xxxxx.com:28887'),
 localName = "";
 
 var loginPage = document.querySelector('#login-page'),
@@ -165,7 +166,12 @@ function hangup() {
 //};
 navigator.mediaDevices.getUserMedia({
     audio: true,
-    video: true
+    //video: true
+    video: { 
+        width: 150, 
+        height: 200, 
+        frameRate: {ideal:60, min:10} 
+    }
 })
 .then(openLocalStream)
 .catch(function(e) {

@@ -23,7 +23,8 @@ var roomId = "myRoom";
 var roomList = [];
 var pcMap = new Map();
 
-var connection = new WebSocket('ws://10.10.10.87:8888', 'chat');
+//var connection = new WebSocket('ws://10.10.10.87:8888', 'chat');
+var connection = new WebSocket('wss://xxx.xxxxx.com:28888');
 
 //////////////////////////////// GET ROOMID ////////////////////////////////
 function selectAddOption(value, index) {
@@ -279,7 +280,7 @@ function handleOffer(data) {
 }
 // 接收answer callback
 function handleAnswer(data) {
-    console.log('handleAnswer^^ Remote answer received:');
+    console.log('handleAnswer^^ Remote answer received:', data);
 
     if (pcMap[data.fromUser]) {
         console.log('handleAnswer has user', data.fromUser);
@@ -291,7 +292,7 @@ function handleAnswer(data) {
 }
 // 候选回调
 function handleCandidate(data) {
-    console.log('handleCandidate^^ Remote candidate received:');
+    console.log('handleCandidate^^ Remote candidate received:', data);
     
     if (pcMap[data.fromUser]) {
         console.log('handleCandidate has user', data.fromUser);
@@ -391,7 +392,7 @@ function createPeerConnection(room, rUser) {
         //    remoteVideo.src = window.URL.createObjectURL(e.stream);
         //};
         pc.onicecandidate = function(event) {
-            // console.log('Handle ICE candidate', userName,' event:', event);
+            console.log('Handle ICE candidate ################ event:', event);
             if (event.candidate) {
                 send({
                     messageType: "candidate",

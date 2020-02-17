@@ -1,7 +1,31 @@
-var WebSocketServer = require('ws').Server,
-wss = new WebSocketServer({
-    port: 8888
-});
+//var WebSocketServer = require('ws').Server,
+//wss = new WebSocketServer({
+//    port: 8887
+//});
+
+const config = {
+    port: 8887,
+    ssl_key: '/usr/local/nginx/cert2/private.key',
+    ssl_cert: '/usr/local/nginx/cert2/caroot/cacert.pem'
+}
+
+const fs = require('fs');
+const httpServer = require('https');
+const WebSocketServer = require('ws').Server;
+// 创建request请求监听器
+const processRequest = (req, res) => {
+    res.writeHead(200);
+    res.end('websocket && https\n');
+};
+
+const app = httpServer.createServer({
+            key: fs.readFileSync(config.ssl_key),
+            cert: fs.readFileSync(config.ssl_cert)
+        }, processRequest).listen(config.port);
+
+const wss = new WebSocketServer({
+            server: app
+        });
 users = {};
 
 //////////////////////////// WebSocket ////////////////////////////
