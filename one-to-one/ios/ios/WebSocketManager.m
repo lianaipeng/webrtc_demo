@@ -56,6 +56,7 @@
     
     NSLog(@"WebSocketManager openWebScoket");
     //self.webSocket = [[SRWebSocket alloc] initWithURL:[NSURL URLWithString:@"ws://10.10.10.87:8888"]];
+    self.webSocket = [[SRWebSocket alloc] initWithURL:[NSURL URLWithString:@"wss://oa.wahu.im:28887"]];
     self.webSocket.delegate = self;
     [self.webSocket open];
     
