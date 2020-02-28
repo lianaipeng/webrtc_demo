@@ -95,6 +95,9 @@ function doMessage(message, conn) {
         case "leave":
             handleLeave(data);
             break;
+        case "detach":
+            handleDetach(data);
+            break;
         default:
             sendTo(conn, {
                 messageType: "error",
@@ -105,7 +108,14 @@ function doMessage(message, conn) {
 }
 
 function handleLogin(conn, data) {
-    console.log("handleLogin^^:", data);
+    console.log("handleLogin^^", data);
+    console.log("handleLogin^^ connMap:", Object.keys(connMap).length, "data:", data);
+
+    if (Object.keys(connMap).includes(data.userName)) {
+        console.log("handleLogin-- includes");
+    } else {
+        console.log("handleLogin-- no includes");
+    }
 
     connMap[data.userName] = conn;
     conn.userName = data.userName;
@@ -117,13 +127,12 @@ function handleLogin(conn, data) {
         roomList: roomList
     });
 
+    console.log("handleLogin^^ connMap:", Object.keys(connMap).length, "data:", data);
     console.log("handleLogin$$", roomList);
 }
 function handleJoin(conn, data) {
     console.log("handleJoin^^ roomId:", data.roomId, "userName:", data.userName);
 
-    var texist = 'noexist';
-    var tuserList = [];
     //var troomInfo = roomList.filter(item => {return item.roomId === data.roomId});
     conn.roomId = data.roomId;
     var troomInfo = roomList.find(item => {
@@ -132,32 +141,57 @@ function handleJoin(conn, data) {
     // 如果房间存在追加用户 如果不存在创建
     if (troomInfo) {
         console.log("handleJoin room exist roomId:", data.roomId, "add userName:", data.userName);
-        if (troomInfo.userList.includes(data.userName)) {
-            
-        } else {
+        // 如果房间为空 则第一个进入房间的为管理员
+        if (troomInfo.userList.length === 0) {
+            troomInfo.master = data.userName;
+        }
+        
+        // 如果房间里不存在该用户 追加之
+        if (!troomInfo.userList.includes(data.userName)) {
             troomInfo.userList.push(data.userName);
         }
-        tuserList = troomInfo.userList;
-        //console.log("handleJoin", troomInfo, troomInfo.roomId, troomInfo.userList);
-        texist = 'exist';
+
+        // 通知所在在线用户 有新用户加入
+        troomInfo.userList.forEach(function(value, index, all) {
+            if (value === data.userName) {
+                sendTo(conn, {
+                    messageType: "join",
+                    roomInfo: troomInfo,
+                    state: 'joined',
+                });
+                console.log("handleJoin value:", value, " joined");
+            } else {
+                var tconn = connMap[value];
+                if (tconn != null) {
+                    sendTo(tconn, {
+                        messageType: "join",
+                        roomInfo: troomInfo,
+                        state: 'newjoin',
+                    });
+                    console.log("handleJoin value:", value, " newjoin ERROR");
+                } else {
+                    console.log("handleJoin value:", value, " newjoin");
+                }
+            }
+        });
     } else {
         console.log("handleJoin room create roomId:", data.roomId, "add userName:", data.userName);
+        var tuserList = [];
         tuserList.push(data.userName);
 
         var troom = {};
         troom.roomId = data.roomId;
+        troom.master = data.userName;
         troom.userList = tuserList;
         roomList.push(troom);
-        texist = 'created';
-    }
 
-    sendTo(conn, {
-        messageType: "join",
-        roomId: data.roomId,
-        state: texist,
-        userList: tuserList
-    });
-    console.log("handleJoin$$ roomId:", data.roomId, "userList:", tuserList);
+        sendTo(conn, {
+            messageType: "join",
+            roomInfo: troom,
+            state: 'created',
+        });
+    }
+    console.log("handleJoin$$ roomId:", data.roomId, "roomList:", roomList);
 }
 
 function handleOffer(conn, data) {
@@ -222,6 +256,21 @@ function leaveMessage(room, from, to) {
     }
     console.log('leaveMessage$$');
 }
+function detachMessage(room, from, to, detach) {
+    console.log('detachMessage^^ roomId:', room, "fromUser:", from, "toUser:", to, "detachUser:", detach);
+    // 只关闭视频连接
+    //var tconn = connMap[data.toUser];
+    var tconn = connMap[to];
+    if (tconn != null) {
+        sendTo(tconn, {
+            messageType: "detach",
+            roomId: room,
+            fromUser: from,
+            detachUser: detach,
+        });
+    }
+    console.log('detachMessage$$');
+}
 
 function removeUser(room, from, to) {
     console.log("removeUser^^ roomId:", room, "fromUser:", from, "toUser:", to);
@@ -262,6 +311,26 @@ function handleLeave(data) {
     for (var key in connMap) {
         console.log("handleLeave$$ exist connnection:", key);
     }
+}
+function handleDetach(data) {
+    console.log("handleDetach^^ roomId:", data.roomId);
+    var troomInfo = roomList.find(item => {
+        return item.roomId === data.roomId;
+    });
+    if (troomInfo) {
+        console.log("handleDetach## userName:", troomInfo.userList);
+        troomInfo.userList.forEach(function(value, index, all) {
+            if (value !== data.detachUser) {
+                detachMessage(data.roomId, data.fromUser, value, data.detachUser);
+            }
+        });
+        console.log("handleDetach## userName:", troomInfo.userList);
+    }
+
+    if (connMap[data.detachUser]) {
+        delete connMap[data.detachUser];
+    }
+    console.log("handleDetach$$ ", data);
 }
 
 function doClose(conn) {

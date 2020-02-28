@@ -3,18 +3,22 @@ var loginPage = document.querySelector('#login-page'),
 localNameInput = document.querySelector('#localName'),
 loginButton = document.querySelector('#login');
 
-var callPage = document.querySelector('#call-page'),
-remoteNameInput = document.querySelector('#remoteName'),
-joinButton = document.querySelector('#join'),
-leaveButton = document.querySelector('#leave');
+var callPage = document.querySelector('#call-page');
+//remoteNameInput = document.querySelector('#remoteName'),
+var joinButton = document.querySelector('#join');
 callPage.style.display = "none";
 
+var localH5 = document.querySelector('#localH5');
 var localVideo = document.querySelector('#localVideo');
 var remoteVideo = document.querySelector('#remoteVideo');
 var remoteVideo2 = document.querySelector('#remoteVideo2');
 
 var selectRoom = document.getElementById('selectRoom');
 var inputRoom = document.getElementById('inputRoom');
+//var detachName = document.getElementById('inputUser');
+var selectUser = document.getElementById('selectUser');
+var detachButton = document.getElementById('detach');
+var leaveButton = document.getElementById('leave');
 
 var localStream; // local video stream object
 
@@ -24,32 +28,54 @@ var roomList = [];
 var pcMap = new Map();
 
 //var connection = new WebSocket('ws://10.10.10.87:8888', 'chat');
-var connection = new WebSocket('wss://xxx.xxxxx.com:28888');
+var connection = new WebSocket('wss://oa.wahu.im:28888');
 
 //////////////////////////////// GET ROOMID ////////////////////////////////
-function selectAddOption(value, index) {
+function roomAddOption(value, index) {
     selectRoom.options.add(new Option(value, index));
 }
-
 function selectRoomChanged() {
     var selectText = selectRoom.options[selectRoom.selectedIndex].text;
     inputRoom.value = selectText;
 }
 //////////////////////////////// GET ROOMID ////////////////////////////////
+//////////////////////////////// GET USERID ////////////////////////////////
+function clearSelectUser() {
+    selectUser.options.length = 0;
+}
+function userAddOption(value, index) {
+    selectUser.options.add(new Option(value, index));
+}
+/*
+function selectUserChanged() {
+    var selectText = selectUser.options[selectUser.selectedIndex].text;
+}
+*/
+function getDetachUser() {
+    var selectText = selectUser.options[selectUser.selectedIndex].text;
+    return selectText;
+}
+//////////////////////////////// GET USERID ////////////////////////////////
 
 //////////////////////////////// GET VIDEO //////////////////////////////////
-var remoteVideos = [{"id":1, "handle":remoteVideo1, "state":false, "userName":""}, 
-                    {"id":2, "handle":remoteVideo2, "state":false, "userName":""},
-                    {"id":3, "handle":remoteVideo3, "state":false, "userName":""},
-                    {"id":4, "handle":remoteVideo4, "state":false, "userName":""},
-                    {"id":5, "handle":remoteVideo5, "state":false, "userName":""}];
-function getRemoteVideo(user) {
+var remoteVideos = [{"id":"remote1", "handle":remoteVideo1, "title":remoteH51,"state":false, "userName":""}, 
+                    {"id":"remote2", "handle":remoteVideo2, "title":remoteH52,"state":false, "userName":""},
+                    {"id":"remote3", "handle":remoteVideo3, "title":remoteH53,"state":false, "userName":""},
+                    {"id":"remote4", "handle":remoteVideo4, "title":remoteH54,"state":false, "userName":""},
+                    {"id":"remote5", "handle":remoteVideo5, "title":remoteH55,"state":false, "userName":""}];
+function getRemoteVideo(user, master) {
     //for (var obj in remoteVideos) {
     for (var i=0; i<remoteVideos.length; i++) {
         console.log("getRemoteVideo id:", remoteVideos[i].id, "state:", remoteVideos[i].state);
         if (remoteVideos[i].state === false) {
             remoteVideos[i].state = true;
             remoteVideos[i].userName = user;
+
+            if (user === master) {
+                remoteVideos[i].title.innerHTML = user+":master";
+            } else {
+                remoteVideos[i].title.innerHTML = user;
+            }
             return remoteVideos[i];
         }
     }
@@ -63,6 +89,8 @@ function retRemoteVideo(user) {
         tvideo.state = false;
         tvideo.userName = "";
         tvideo.handle.srcObject = null;
+
+        tvideo.title.innerHTML = tvideo.id;
     }
 }
 //////////////////////////////// GET VIDEO //////////////////////////////////
@@ -94,6 +122,9 @@ connection.onmessage = function(message) {
         break;
     case "leave":
         handleLeave(data);
+        break;
+    case "detach":
+        handleDetach(data);
         break;
     default:
         console.log("Unrecognized command", data.messageType);
@@ -149,10 +180,36 @@ function() {
             fromUser: localUser,
             toUser: key
         });
+    }
+});
+// 移除房间按钮
+detachButton.addEventListener("click",
+function() {
+    // 只关闭视频连接
+    roomId = inputRoom.value;
+    console.log('detachButton ', roomId);
 
-        deletePeerConnection(key);
+    var troomInfo = roomList.find(item => {return item.roomId === roomId});
+    if (!troomInfo) {
+        console.log("detachButton## room no exist:", roomId);
+        return;
+    }
+    console.log("detachButton$$", roomList);
 
-        retRemoteVideo(key);
+    //var detachUser = detachName.value;
+    var detachUser = getDetachUser();
+    if (detachUser !== null && troomInfo.userList.includes(detachUser)) {
+        send({
+            messageType: "detach",
+            roomId: roomId, 
+            fromUser: localUser,
+            detachUser: detachUser
+        });
+
+        //deletePeerConnection(detachUser);
+        //retRemoteVideo(detachUser);
+    } else {
+        console.log("detachButton detachName is null || no exist");
     }
 });
 // callback
@@ -166,10 +223,10 @@ function handleLogin(data) {
 
         // only get roomlist 
         roomList = data.roomList;
-        //console.log("handleLogin:", data.roomList);
+        console.log("handleLogin:", data.roomList);
         
         roomList.forEach(function(value, index, all) {
-            selectAddOption(value.roomId, index);
+            roomAddOption(value.roomId, index);
         });
     }
 
@@ -195,29 +252,55 @@ function handleJoin(data) {
     console.log("handleJoin^^", data);
 
     roomId = data.roomId;
-    var troomInfo = roomList.find(item => {return item.roomId === data.roomId});
+    console.log("handleJoin##", roomList);
+    var troomInfo = roomList.find(item => {return item.roomId === data.roomInfo.roomId});
     if (troomInfo) {
-        console.log("handleJoin exist", data.roomId);
-        troomInfo.userList = data.userList;
+        console.log("handleJoin exist", data.roomInfo.roomId);
+        troomInfo.roomId = data.roomInfo.roomId;
+        troomInfo.master = data.roomInfo.master;
+        troomInfo.userList = data.roomInfo.userList;
     } else {
         troomInfo = {};
-        console.log("handleJoin create", data.roomId);
-        troomInfo.roomId = data.roomId;
-        troomInfo.userList = data.userList;
+        console.log("handleJoin create", data.roomInfo.roomId);
+        troomInfo.roomId = data.roomInfo.roomId;
+        troomInfo.master = data.roomInfo.master;
+        troomInfo.userList = data.roomInfo.userList;
         roomList.push(troomInfo);
     }
-    console.log("handleJoin$$", roomList);
+    console.log("handleJoin##", roomList);
 
+    if (data.state === "joined") {
+        console.log("handleJoin## state:", data.state, "doOffer");
+        troomInfo.userList.forEach(function(name, index, all) {
+            console.log("handleJoin", name, index);        
+            if (name !== localUser) {
+                doOffer(data.roomId, name, troomInfo.master);
+            }
+        });
+
+        if (troomInfo.master === localUser) {
+            localH5.innerHTML = localUser+":master";
+        } else {
+            localH5.innerHTML = localUser;
+        }
+    } else {
+        console.log("handleJoin## state:", data.state, "doNothing");
+    }
+
+    clearSelectUser();
     troomInfo.userList.forEach(function(name, index, all) {
         console.log("handleJoin", name, index);        
-        if (name !== localUser) {
-            doOffer(data.roomId, name);
+        if (name !== troomInfo.master) {
+            userAddOption(name, index);
         }
     });
+
+
+    console.log("handleJoin$$", roomList);
 }
-function doOffer(room, remote) {
+function doOffer(room, remote, master) {
     console.log("doOffer^^: roomId:", room,"localUser:", localUser, "romoteUser:", remote);
-    var pc = createPeerConnection(room, remote);
+    var pc = createPeerConnection(room, remote, master);
     let co = new Promise((r,j)=>{
         pc.createOffer(offer=>{
                     r(offer);
@@ -250,7 +333,7 @@ function handleOffer(data) {
     } else {
         console.log("handleOffer no pc", data.fromUser);
 
-        var pc = createPeerConnection(data.roomId, data.fromUser);
+        var pc = createPeerConnection(data.roomId, data.fromUser, "");
         pc.setRemoteDescription(data.offer);
         
         let co = new Promise((r,j)=>{
@@ -316,6 +399,16 @@ function handleLeave(data) {
     }
     console.log('handleLeave$$', pcMap);
 }
+// 移除操作
+function handleDetach(data) {
+    console.log('handleDetach^^ remoteUser:', data.fromUser, " detachUser:", data.detachUser);
+
+    deletePeerConnection(data.detachUser);
+
+    retRemoteVideo(data.detachUser);
+
+    console.log('handleDetach$$', pcMap);
+}
 //////////////////////////////// Event callback ////////////////////////////
 ////////////////////////////// PeerConnection //////////////////////////////
 // 必须初始化完 本地视频 才能调用create函数
@@ -363,7 +456,7 @@ function deletePeerConnection(remote) {
     delete pcMap[remote];
     console.log('deletePeerConnection$$');
 }
-function createPeerConnection(room, rUser) {
+function createPeerConnection(room, rUser, master) {
     var pc = null;
     try {
         //"iceServers": [
@@ -410,7 +503,7 @@ function createPeerConnection(room, rUser) {
             console.log('Handle remote stream added.');
             //remoteVideo.srcObject = event.stream;
 
-            var tvideo = getRemoteVideo(rUser);
+            var tvideo = getRemoteVideo(rUser, master);
             tvideo.handle.srcObject = event.stream;
         }
         pc.onremovestream = function(event) {

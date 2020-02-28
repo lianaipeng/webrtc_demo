@@ -44,6 +44,7 @@ pod install
         "roomList":[
             {
                 "roomId":"roomOne",
+                "master": "1111",
                 "userList":[
                     "1111",
                     "1222",
@@ -54,8 +55,9 @@ pod install
         ]
     }
 2.Join And Offer:
-    选择(或输入)房间, 
+    选择(或输入)房间,
     如果房间不存在, 则创建房间, 并不转发offer.
+    返回数据，master代表管理员，created代表房间创建成功，joined代表加入房间成功，newjoin代表有新用户加入。
     -->  加入房间(无则创建)
     {
         "messageType":"join",
@@ -65,9 +67,13 @@ pod install
     <-- 加入成功返回数据
     {
         "messageType":"join",
-        "roomId":"roomNew",
-        "state": "exist|created",
-        "userList": [ '2222', '1111' ]
+        "roomInfo”:
+            {
+                "roomId": “123”,
+                "master": “11",
+                "userList": [ '2222', '1111' ]
+            }
+        "state": “created|joined|newjoin"
     }
     给房间里除自己外, 所有的用户创建PeerConnection连接,
     获取本地offer. 通过服务器转发offer消息给房间里所有的在线用户.
@@ -108,7 +114,7 @@ pod install
         "candidate":Object{...}
     }
 5.Leave:
-    退出房间, 
+    退出房间,
     关闭PeerConnection连接, 归还视频播放资源
     服务器不关闭websocket连接, 从房间列表中移除该用户
     -->  发给远端用户
@@ -121,8 +127,26 @@ pod install
     ---->  接收到远端用户数据
     关闭PeerConnection连接, 归还视频播放资源
     从房间列表中移除该用户
-6.Close:
-    用户退出 connection close. 
+6.Detach:
+    移除用户
+    管理员发送数据到服务器，服务器转发数据给房间里的其他用户（除要剔除的用户）
+    其他用户断开PeerConnection
+    -->  发给服务器
+    {
+        "messageType":"detach",
+        "roomId":"roomNew",
+        "fromUser":"1111",
+        "detachUser":"2222"
+    }
+    <— 发个远端用户
+     {
+        "messageType":"detach",
+        "roomId":"roomNew",
+        "fromUser":"1111",
+        "detachUser":"2222"
+    }
+7.Close:
+    用户退出 connection close.
     给房间里所有的用户发送leave信息
     从房间列表中移除该用户
     从websocket列表中移除该链接

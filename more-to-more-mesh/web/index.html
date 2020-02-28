@@ -47,41 +47,52 @@
     </div>
 
     <div id="call-page" class="page">
-      <div>
-        <!--<input type="text" id="remoteName" />-->
+      <div style="position: relative;">
+        <h5>Room</h5>
+        <!--<input type="text" id="remotename" />-->
         <select style="width:118px;height:21px;" id="selectRoom" onchange="selectRoomChanged()">
           <option style='display: none'></option>
         </select>
-        <input name="box" style="width:100px;position:absolute;left:-2px;top:2px;" id='inputRoom'/>
-        <button id="join">Join</button>
-        <button id="leave">Leave</button>
+        <input name="box" style="width:100px;position:absolute;left:0px;top:22px;" id='inputRoom'/>
+        <button id="join">join</button>
+      </div>
+
+      <div>
+        <h5>User</h5>
+        <!--<input name="box" style="width:118px;box-sizing:border-box;left:-2px;" id='inputUser'/>-->
+        <!--<select style="width:118px;height:21px;" id="selectUser" onchange="selectUserChanged()">-->
+        <select style="width:118px;height:21px;" id="selectUser">
+          <!--<option style='display: none'></option>-->
+        </select>
+        <button id="detach">detach</button>
+        <button id="leave">leave</button>
       </div>
 
       <div id="videos" class="contain">
         <div class="baseContain">
-          <h5>local</h5>
+          <h5 id="localH5">local</h5>
           <!--<video id="localVideo" autoplay="" style="object-fit:none"></video>-->
           <video id="localVideo" autoplay="" ></video>
         </div>
         <div class="baseContain">
-          <h5>remote1</h5>
+          <h5 id="remoteH51">remote1</h5>
           <video id="remoteVideo1" autoplay="" ></video>
         </div>
         <div class="baseContain">
-          <h5>remote2</h5>
+          <h5 id="remoteH52">remote2</h5>
           <video id="remoteVideo2" autoplay="" ></video>
         </div>
 
         <div class="baseContain">
-          <h5>remote3</h5>
+          <h5 id="remoteH53">remote3</h5>
           <video id="remoteVideo3" autoplay="" ></video>
         </div>
         <div class="baseContain">
-          <h5>remote4</h5>
+          <h5 id="remoteH54">remote4</h5>
           <video id="remoteVideo4" autoplay="" ></video>
         </div>
         <div class="baseContain">
-          <h5>remote5</h5>
+          <h5 id="remoteH55">remote5</h5>
           <video id="remoteVideo5" autoplay="" ></video>
         </div>
       </div>
